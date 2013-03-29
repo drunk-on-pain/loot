@@ -39,7 +39,7 @@ namespace clp {
         
 
 /*!
-    A `sd::args::option` represents one argument on the command line. An argument is
+    A `loot::clp::option` represents one argument on the command line. An argument is
     anything starting with a single hyphen ("-"), which is the short version of the option
     or a double-hyphen ("--") for the long version. As indicated, each option can contain
     a short and a long name, without the need for both being given at the same time. 
@@ -58,7 +58,7 @@ public:
         - Option is not mandatory
 
         Not specifying any name afterwards will result in
-        `sd::args::option_has_no_names_error`.
+        `loot::clp::option_has_no_names_error`.
     */
     option();
     
@@ -188,7 +188,7 @@ public:
     
     /*!
         Specifies the number of values that are expected for this option. If 
-        `sd::args::unlimited_num_ values` or `sd::args::no_values` is specified as
+        `loot::clp::unlimited_num_ values` or `loot::clp::no_values` is specified as
         `constraint` then this value is ignored.
     */
     unsigned int num_expected_values;

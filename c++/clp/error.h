@@ -27,38 +27,41 @@
     either expressed or implied, of the FreeBSD Project.
 */
 
-#ifndef RESULT_H
-#define RESULT_H
+#ifndef ERROR_H
+#define ERROR_H
 
-#include "error.h"
-
-#include <vector>
+#include "args.h"
+#include "option.h"
 
 namespace loot {
 namespace clp {
 
 
 /*!
-    `sd::args::result` is the result to a call of `sd::args::parser::parse(int, char**)`.
-    It resembles the result of the parsing and in case of errors it contains all the
-    `sd:.args::option` instances that failed the validation and why they failed, thus
-    client code can easily figure out which option(s) caused the error and provide quality
-    messages to users.
+    Used to indicate a validation error for one option. Instances of this class are
+    created by `loot::clp::result` containing a copy of the `loot::clp::option` that
+    failed and an associated error reason.
 */
-class result
+class error
 {
 public:
     /*!
-        Contains all the errors and associated miserable options instances that failed
-        validation for inspection by client code. The options are inside an instance
-        of `sd::args::error` which also contains a reason for the error.
+        Default-constructor. Create an empty instance with a `loot::clp::unspecified_error`
+        error type.
     */
-    std::vector<error> errors;
+    error();
 
     /*!
-        Default constructor.
+        Create a new error instance with an option and a reason.
+
+        @param[in] opt
+        The option which caused an error.
+
+        @param[in] reason
+        One of the predefined error reasons that describe why the option failed
+        validation.
     */
-    result();
+    error(const option& opt, requirement_error reason);
 
     /*!
         Copy-constructor.
@@ -66,7 +69,7 @@ public:
         @param[in] other
         Source instance to copy values from.
     */
-    result(const result& other);
+    error(const error& other);
 
     /*!
         Move-constructor.
@@ -74,7 +77,7 @@ public:
         @param[in] temp
         Temporary instance to move values from.
     */
-    result(result&& temp);
+    error(error&& temp);
 
     /*!
         Assignment-operator.
@@ -85,7 +88,7 @@ public:
         @return
         Returns the current instance that is now a copy of `other`.
     */
-    result& operator=(const result& other);
+    error& operator=(const error& other);
 
     /*!
         Move-assignment-operator.
@@ -96,18 +99,18 @@ public:
         @return
         Returns the current instance that is now a copy of `temp`.
     */
-    result& operator=(result&& temp);
+    error& operator=(error&& temp);
 
     /*!
-        Convenience method which states whether the parsing was successful or drew up
-        violations against the option requirements. One could als call `errors.size()` and
-        check for a zero return value (or similar).
-
-        @return
-        Returns `true` if no violations were found or `false` if parsing found errors.
-        Errors can be evaluated by iterating the `errors` member.
+        Copy of the option for which the requirements are not met by the command line
+        parameters, thus causing an error.
     */
-    bool good() const;
+    option opt;
+
+    /*!
+        Reason why the option failed the validation test.
+    */
+    requirement_error reason;
 
 };
 
@@ -115,4 +118,4 @@ public:
 } // namespace clp
 } // namespace loot
 
-#endif // RESULT_H
+#endif // ERROR_H

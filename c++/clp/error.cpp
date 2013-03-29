@@ -34,7 +34,7 @@ namespace clp {
 
 error::error()
 {
-    reason = unspecified_error;
+    reason = requirement_error::unspecified_error;
 }
 
 error::error(const option& opt, requirement_error reason)

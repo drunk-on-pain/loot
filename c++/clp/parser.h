@@ -51,12 +51,12 @@ class parser
     typedef std::map<option, std::pair<std::vector<std::string>, bool>> opt_map;
 public:
     /*!
-        Creates an new `sd::args::parser` with no associated `sd::args::option` instances.
+        Creates an new `loot::clp::parser` with no associated `loot::clp::option` instances.
     */
     parser();
 
     /*!
-        Creates a new `sd::args::parser` with a list of `sd::args::option` instances.
+        Creates a new `loot::clp::parser` with a list of `loot::clp::option` instances.
 
         @param[in] args
         List of options creates by the bracket initializer (`{}`).
@@ -64,7 +64,7 @@ public:
     parser(std::initializer_list<option> args);
 
     /*!
-        Add an `sd::args::option` for validation and, in case values are expected, to have
+        Add an `loot::clp::option` for validation and, in case values are expected, to have
         its values read.
 
         @param[in] opt
@@ -78,7 +78,7 @@ public:
     bool add_option(const option& opt);
 
     /*!
-        Add an `sd::args::option` for validation and, in case values are expected, to have
+        Add an `loot::clp::option` for validation and, in case values are expected, to have
         its values read.
 
         @param[in] temp
@@ -102,7 +102,7 @@ public:
         which contains the whole command line.
 
         @return
-        Returns a `sd::args::result` which conveys whether the parsing finished with
+        Returns a `loot::clp::result` which conveys whether the parsing finished with
         success or if an error occurred.
     */
     result parse(int argc, char* argv[]);
@@ -117,7 +117,7 @@ public:
         @return
         Returns a list of values (if any). The values are in the order as specified on the
         command line. If the option cannot be found, has no values or
-        `sd::args::parser::parse(int &, char **)` has not been called before, an empty
+        `loot::clp::parser::parse(int &, char **)` has not been called before, an empty
         list is returned.
     */
     std::vector<std::string> values_from_option(const std::string& name) const;

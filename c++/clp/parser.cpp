@@ -88,8 +88,10 @@ parser::parse(int argc, char* argv[])
     opt_map::const_iterator iter = std::begin(options);
     while (iter != std::end(options)) {
         option_requirement req = iter->first.requirement;
-        if (mandatory_option == req && !iter->second.second) {
-            r.errors.push_back(error(iter->first, option_not_found_error));
+        if (option_requirement::mandatory_option == req && !iter->second.second) {
+            r.errors.push_back(error(
+                    iter->first,
+                    requirement_error::option_not_found_error));
         }
         iter++;
     }
@@ -121,39 +123,39 @@ parser::evaluate_values(int argc, char* argv[])
             // ...sure we know that option!
             iter->second.second = true;
 
-            if (no_values == iter->first.constraint) {
+            if (value_constraint::no_values == iter->first.constraint) {
                 break; // No need to continue; finding the option is enough.
             }
 
             // Read all values according to the configuration. Unlimited is the amount
             // of args on the command line minus the position of the current option.
-            int count = unlimited_num_values == iter->first.constraint
+            int count = value_constraint::unlimited_num_values == iter->first.constraint
                     ? argc - c - 1
                     : iter->first.num_expected_values;
             unsigned int values_read = read(c, count, argv, iter->second.first);
 
             switch (iter->first.constraint) {
-                case exact_num_values:
+                case value_constraint::exact_num_values:
                     if (values_read != iter->first.num_expected_values) {
                         result.errors.push_back(error(
                         		iter->first,
-                        		not_enough_values_error));
+                                requirement_error::not_enough_values_error));
                     }
                     break;
 
-                case up_to_num_values:
-                case unlimited_num_values:
+                case value_constraint::up_to_num_values:
+                case value_constraint::unlimited_num_values:
                     if (0 == values_read) {
                         result.errors.push_back(error(
                         		iter->first,
-                        		not_enough_values_error));
+                                requirement_error::not_enough_values_error));
                     }
                     break;
 
                 default:
                     result.errors.push_back(error(
                     		iter->first,
-                    		invalid_value_constraint_error));
+                            requirement_error::invalid_value_constraint_error));
                     break;
             }
 

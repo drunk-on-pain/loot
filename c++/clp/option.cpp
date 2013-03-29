@@ -34,12 +34,22 @@ namespace loot {
 namespace clp {
 
 option::option()
-    : option("", "", optional_option, unlimited_num_values, 0)
+    : option(
+            "",
+            "",
+            option_requirement::optional_option,
+            value_constraint::unlimited_num_values,
+            0)
 {
 }
 
 option::option(const std::string& short_name, const std::string& long_name)
-    : option(short_name, long_name, optional_option, unlimited_num_values, 0)
+    : option(
+            short_name,
+            long_name,
+            option_requirement::optional_option,
+            value_constraint::unlimited_num_values,
+            0)
 {
 }
 

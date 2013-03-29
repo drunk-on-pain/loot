@@ -39,9 +39,9 @@ namespace clp {
 
 /*!
     Defines constants which describe how many values are to be expected for one 
-    `sd::args::option`.
+    `loot::clp::option`.
 */
-enum value_constraint
+enum class value_constraint
 {
     /*!
         The number of values provided must match exactly the number expected.
@@ -67,7 +67,7 @@ enum value_constraint
     Defines constants which describe how options are expected to appear on the command
     line.
 */
-enum option_requirement
+enum class option_requirement
 {
     /*!
         The option must be present.
@@ -82,7 +82,7 @@ enum option_requirement
 /*!
     Defines constants which describe the reason why an option failed the validation test.
 */
-enum requirement_error
+enum class requirement_error
 {
     /*!
         Can be used as a default value indicating an uninitialized state.
@@ -101,7 +101,7 @@ enum requirement_error
     */
     option_has_no_names_error,
     /*!
-        Invalid `value_constraint` specified.
+        Invalid `loot::clp::value_constraint` specified.
     */
     invalid_value_constraint_error
 };
