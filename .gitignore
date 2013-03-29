@@ -6,3 +6,11 @@
 *.o
 
 *.dylib
+
+build_debug/Makefile
+
+build_debug/clp/Makefile
+
+build_debug/clp/test/Makefile.clp_test
+
+build_debug/clp/test/clp_test
