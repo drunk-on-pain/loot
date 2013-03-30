@@ -123,6 +123,7 @@ TEST(ArgsTest, TwoValues)
 
     std::vector<std::string> values = p.values_from_option("s");
     EXPECT_EQ(values.empty(), false);
+    EXPECT_EQ(values.size(), 2);
     EXPECT_EQ(values.at(0), "FirstValue");
     EXPECT_EQ(values.at(1), "SecondValue");
 }
@@ -149,6 +150,7 @@ TEST(ArgsTest, UnlimitedValuesDelimitedByOption)
 
     std::vector<std::string> values = p.values_from_option("s");
     EXPECT_EQ(values.empty(), false);
+    EXPECT_EQ(values.size(), 3);
     EXPECT_EQ(values.at(0), "FirstValue");
     EXPECT_EQ(values.at(1), "SecondValue");
     EXPECT_EQ(values.at(2), "ThirdValue");
@@ -175,6 +177,7 @@ TEST(ArgsTest, UnlimitedValuesDelimitedByEnd)
 
     std::vector<std::string> values = p.values_from_option("s");
     EXPECT_EQ(values.empty(), false);
+    EXPECT_EQ(values.size(), 3);
     EXPECT_EQ(values.at(0), "FirstValue");
     EXPECT_EQ(values.at(1), "SecondValue");
     EXPECT_EQ(values.at(2), "ThirdValue");
@@ -224,6 +227,9 @@ TEST(ArgsTest, TwoOptionsOneUnlimitedErrorOneno_values)
     EXPECT_EQ(r.errors.at(0).opt.short_name, "s");
 
     EXPECT_EQ(p.has_option("no-values"), true);
+
+    std::vector<std::string> values = p.values_from_option("no-values");
+    EXPECT_EQ(values.empty(), true);
 }
 
 TEST(ArgsTest, ManyOptions)
@@ -307,6 +313,12 @@ TEST(ArgsTest, ManyOptionsMixedRequirements)
     result r = p.parse(9, argv);
 
     EXPECT_EQ(r.good(), true);
+
+    std::vector<std::string> values = p.values_from_option("files");
+    EXPECT_EQ(values.size(), 3);
+    EXPECT_EQ(values.at(0), "file1.txt");
+    EXPECT_EQ(values.at(1), "file2.txt");
+    EXPECT_EQ(values.at(2), "file3.txt");
 }
 
 TEST(ArgsTest, ManyOptionsMixedRequirementsError)
@@ -417,4 +429,29 @@ TEST(ArgsTest, NoValueMoreValuesAvailable)
 
     std::vector<std::string> values = p.values_from_option("s");
     EXPECT_EQ(values.size(), 0);
+}
+
+TEST(ArgsTest, NoOptionName)
+{
+    char *argv[7] = {
+            (char*)"ignored",
+            (char*)"-s",
+            (char*)"FirstValue",
+            (char*)"SecondValue",
+            (char*)"ThirdValue",
+            (char*)"FourthValue",
+            (char*)"FifthValue"};
+    parser p = {
+            option( "",
+                    "",
+                    option_requirement::optional_option,
+                    value_constraint::no_values,
+                    6) };
+    result r = p.parse(7, argv);
+
+    EXPECT_EQ(r.good(), false);
+    EXPECT_EQ(r.errors.size(), 1);
+
+    error err = r.errors.at(0);
+    EXPECT_EQ(err.reason, requirement_error::option_has_no_names_error);
 }
