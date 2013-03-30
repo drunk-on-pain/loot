@@ -87,12 +87,6 @@ parser::parse(int argc, char* argv[])
 
     opt_map::const_iterator iter = std::begin(options);
     while (iter != std::end(options)) {
-        if (iter->first.short_name.empty() && iter->first.long_name.empty()) {
-            r.errors.push_back(error(
-                    iter->first,
-                    requirement_error::option_has_no_names_error));
-        }
-
         option_requirement req = iter->first.requirement;
         if (option_requirement::mandatory_option == req && !iter->second.second) {
             r.errors.push_back(error(
@@ -112,6 +106,12 @@ parser::evaluate_values(int argc, char* argv[])
 
     auto iter = std::begin(options);
     while (iter != std::end(options)) {
+        if (iter->first.short_name.empty() && iter->first.long_name.empty()) {
+            result.errors.push_back(error(
+                    iter->first,
+                    requirement_error::option_has_no_names_error));
+        }
+
         // Skip the application name => c = 1
         for (int c = 1; c < argc; c++) {
             std::string arg(argv[c]);
