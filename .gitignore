@@ -1,16 +1,10 @@
 
 .DS_Store
 
-*.user
-
 *.o
 
 *.dylib
 
-build_debug/Makefile
-
-build_debug/clp/Makefile
-
-build_debug/clp/test/Makefile.clp_test
-
-build_debug/clp/test/clp_test
+c++/lib
+c++/bin
+c++/build
