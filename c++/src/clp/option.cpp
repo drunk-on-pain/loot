@@ -27,8 +27,8 @@
     either expressed or implied, of the FreeBSD Project.
 */
 
-#include "option.h"
-#include "args.h"
+#include <clp/option.h>
+#include <clp/args.h>
 
 namespace loot {
 namespace clp {

@@ -16,10 +16,10 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#include <args.h>
-#include <error.h>
-#include <option.h>
-#include <parser.h>
+#include <clp/args.h>
+#include <clp/error.h>
+#include <clp/option.h>
+#include <clp/parser.h>
 
 #include <gtest/gtest.h>
 

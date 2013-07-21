@@ -27,7 +27,7 @@
     either expressed or implied, of the FreeBSD Project.
 */
 
-#include "error.h"
+#include <clp/error.h>
 
 namespace loot {
 namespace clp {

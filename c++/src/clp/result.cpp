@@ -27,7 +27,7 @@
     either expressed or implied, of the FreeBSD Project.
 */
 
-#include "result.h"
+#include <clp/result.h>
 
 namespace loot {
 namespace clp {

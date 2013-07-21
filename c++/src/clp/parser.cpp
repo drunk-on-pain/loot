@@ -27,7 +27,7 @@
     either expressed or implied, of the FreeBSD Project.
 */
 
-#include "parser.h"
+#include <clp/parser.h>
 
 namespace loot {
 namespace clp {
