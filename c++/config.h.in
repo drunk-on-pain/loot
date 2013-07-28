@@ -27,46 +27,21 @@
 #   either expressed or implied, of the FreeBSD Project.
 #
 
-cmake_minimum_required(VERSION 2.8)
+#ifndef _CONFIG_H
+#define _CONFIG_H
 
-project(loot)
+#cmakedefine HAS_CXX11_AUTO
+#cmakedefine HAS_CXX11_NULLPTR
+#cmakedefine HAS_CXX11_LAMBDA
+#cmakedefine HAS_CXX11_STATIC_ASSERT
+#cmakedefine HAS_CXX11_RVALUE_REFERENCES
+#cmakedefine HAS_CXX11_DECLTYPE
+#cmakedefine HAS_CXX11_CSTDINT_H
+#cmakedefine HAS_CXX11_LONG_LONG
+#cmakedefine HAS_CXX11_VARIADIC_TEMPLATES
+#cmakedefine HAS_CXX11_CONSTEXPR
+#cmakedefine HAS_CXX11_SIZEOF_MEMBER
+#cmakedefine HAS_CXX11_FUNC
+#cmakedefine HAS_CXX11_ENUM_CLASS
 
-# Set compiler used
-
-#IF (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-#    MESSAGE(STATUS "Found GNU Compiler Collection")
-#	SET(CMAKE_CXX_FLAGS "-std=c++0x")
-#ELSEIF (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-#    MESSAGE(STATUS "Found LLVM Clang")
-#    STRING(REGEX MATCH "[0-9]+" CLANG_MAJOR_VERSION ${CMAKE_CXX_COMPILER_VERSION})
-#    
-#    IF (${CLANG_MAJOR_VERSION} GREATER 3 OR ${CLANG_MAJOR_VERSION} EQUAL 3)
-#        SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
-#        SET(CMAKE_SHARED_LINKER_FLAGS "-lc++")
-#    ENDIF (${CLANG_MAJOR_VERSION} GREATER 3 OR ${CLANG_MAJOR_VERSION} EQUAL 3)
-#ENDIF (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-
-
-# Check compiler features
-
-include(cmake_cxx11/CheckCXX11Features.cmake)
-include(CheckIncludeFileCXX)
-
-check_include_file_cxx("initializer_list" HAVE_INITIALIZER_LIST)
-
-foreach (flag ${CXX11_FEATURE_LIST})
-    set(${flag} 1)
-endforeach (flag ${CXX11_FEATURE_LIST})
-
-configure_file(${CMAKE_HOME_DIRECTORY}/config.h.in ${CMAKE_HOME_DIRECTORY}/include/config.h)
-
-message(STATUS ${CMAKE_CXX_FLAGS})
-message(STATUS ${CMAKE_SHARED_LINKER_FLAGS})
-
-# Project configuration
-
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-
-add_subdirectory("${CMAKE_SOURCE_DIR}/src/clp")
-add_subdirectory("${CMAKE_SOURCE_DIR}/test/clp")
+#endif
