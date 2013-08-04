@@ -31,24 +31,10 @@ cmake_minimum_required(VERSION 2.8)
 
 project(loot)
 
-# Set compiler used
-
-#IF (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-#    MESSAGE(STATUS "Found GNU Compiler Collection")
-#	SET(CMAKE_CXX_FLAGS "-std=c++0x")
-#ELSEIF (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-#    MESSAGE(STATUS "Found LLVM Clang")
-#    STRING(REGEX MATCH "[0-9]+" CLANG_MAJOR_VERSION ${CMAKE_CXX_COMPILER_VERSION})
-#    
-#    IF (${CLANG_MAJOR_VERSION} GREATER 3 OR ${CLANG_MAJOR_VERSION} EQUAL 3)
-#        SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
-#        SET(CMAKE_SHARED_LINKER_FLAGS "-lc++")
-#    ENDIF (${CLANG_MAJOR_VERSION} GREATER 3 OR ${CLANG_MAJOR_VERSION} EQUAL 3)
-#ENDIF (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-
 
 # Check compiler features
 
+# Tests ans sets options for compilers
 include(cmake_cxx11/CheckCXX11Features.cmake)
 include(CheckIncludeFileCXX)
 
@@ -63,10 +49,20 @@ configure_file(${CMAKE_HOME_DIRECTORY}/config.h.in ${CMAKE_HOME_DIRECTORY}/inclu
 message(STATUS ${CMAKE_CXX_FLAGS})
 message(STATUS ${CMAKE_SHARED_LINKER_FLAGS})
 
+
+# 3rd party dependencies
+find_package(GTest)
+
+
 # Project configuration
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/clp")
-add_subdirectory("${CMAKE_SOURCE_DIR}/test/clp")
+
+if (${GTEST_FOUND})
+    message(STATUS "GTest found: Create test suite")
+    
+    add_subdirectory("${CMAKE_SOURCE_DIR}/test/clp")
+endif (${GTEST_FOUND})

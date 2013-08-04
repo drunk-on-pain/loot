@@ -30,11 +30,6 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-#define HAVE_INITIALIZER_LIST
-/* #undef HAVE_NULLPTR */
-/* #undef HAVE_RVALUE_REF */
-/* #undef HAVE_ENUM_CLASS */
-
 #define HAS_CXX11_AUTO
 #define HAS_CXX11_NULLPTR
 #define HAS_CXX11_LAMBDA

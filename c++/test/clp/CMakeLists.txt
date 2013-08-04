@@ -29,7 +29,9 @@
 
 set(CLP_TEST_SOURCES main.cpp 
 					 test.cpp)
-include_directories("../../include")
+include_directories("../../include" ${GTEST_INCLUDE_DIR})
+
+message(STATUS ${GTEST_INCLUDE_DIR})
 
 add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
 
@@ -37,4 +39,4 @@ link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 add_executable(loot-clp-test ${CLP_TEST_SOURCES})
 
-target_link_libraries(loot-clp-test loot-clp gtest c++)
+target_link_libraries(loot-clp-test loot-clp ${GTEST_LIBRARY})
