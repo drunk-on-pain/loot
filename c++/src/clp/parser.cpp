@@ -87,8 +87,8 @@ parser::parse(int argc, char* argv[])
 
     opt_map::const_iterator iter = std::begin(options);
     while (iter != std::end(options)) {
-        option_requirement req = iter->first.requirement;
-        if (option_requirement::mandatory_option == req && !iter->second.second) {
+        option_type req = iter->first.type;
+        if (option_type::mandatory_option == req && !iter->second.second) {
             r.errors.push_back(error(
                     iter->first,
                     requirement_error::option_not_found_error));
@@ -239,6 +239,91 @@ parser::find_option(const std::string& name) const
             std::end(options),
             [&name](const opt_map::value_type& item) -> bool {
         return item.first.is_name_known(name) && item.second.second;
+    });
+}
+    
+void
+parser::print_help(std::ostream& out, bool newline) const
+{
+    // We have to loop through the options twice. The first loop is to find the longest
+    // option so we can calculate the required whitespace. The second loop then prints
+    // the options.
+    int max = 0;
+    std::for_each(
+            std::begin(options),
+            std::end(options),
+            [&max](const opt_map::value_type& item) {
+        int optlen = item.first.short_name.length() + item.first.long_name.length();
+        max = optlen > max ? optlen : max;
+    });
+    
+    if (!options.empty()) {
+        out << "Options" << std::endl;
+    }
+    
+    std::for_each(
+            std::begin(options),
+            std::end(options),
+            [max, &out, newline](const opt_map::value_type& item) {
+        int posfix = 0;
+        if (!item.first.short_name.empty()) {
+            out << "-" << item.first.short_name;
+            posfix += 1;
+        }
+        
+        if (!item.first.long_name.empty()) {
+            if (!item.first.short_name.empty()) {
+                out << " / ";
+                posfix += 3;
+            }
+            out << "--" << item.first.long_name;
+            posfix += 2;
+        }
+                
+        // The "6" comes from the hyphens, the "/" and the spaces between. The "3" is
+        // from the additional space after the options.
+       int descstart = max + 6 + 3;
+        
+        // Print whitespace until we have max + three additional spaces chars
+        int loops = descstart
+                - item.first.short_name.length()
+                - item.first.long_name.length()
+                - posfix;
+        for (int c = 0; c < loops; c++) {
+            out << " ";
+        }
+        
+        // Now some details about the option
+        if (!item.first.description.empty()) {
+            out << item.first.description << std::endl;
+            // Move the cursor to the start of the description.
+            for (int c = 0; c < descstart; c++) {
+                out << " ";
+            }
+        }
+        
+        switch (item.first.constraint) {
+            case value_constraint::exact_num_values:
+                out << "(" << item.first.num_expected_values << " value(s) expected)";
+                break;
+                
+            case value_constraint::up_to_num_values:
+                out << "(between 1 and " << item.first.num_expected_values << " values)";
+                break;
+
+            case value_constraint::unlimited_num_values:
+                out << "(unlimited number of values)";
+                break;
+                
+            case value_constraint::no_values:
+                out << "(no value expected)";
+                break;
+        }
+        
+        out << std::endl;
+        if (newline) {
+            out << std::endl;
+        }
     });
 }
 

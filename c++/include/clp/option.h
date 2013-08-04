@@ -86,8 +86,8 @@ public:
         @param[in] long_name
         Long name for this option.
 
-        @param[in] requirement
-        Defines whether this option is mandatory or optional.
+        @param[in] type
+        Defines whether this option is mandatory or optional or some special type.
         
         @param[in] constraint
         Defines if there are any values expected for this option and how to interpret
@@ -96,13 +96,17 @@ public:
         @param[in] num_expected_values
         The number of values that are exected for this option to be provided on the
         command line. Interpretation depends on the value of `constraint`.
+     
+        @param[in] description
+        User defined description that is displayed when printing the list of options.
     */
     option(
             const std::string& short_name,
             const std::string& long_name,
-            option_requirement requirement,
+            option_type        type,
             value_constraint   constraint,
-            unsigned int       num_expected_values);
+            unsigned int       num_expected_values,
+            const std::string& description);
     
     /*!
         Copy-constructor.
@@ -200,9 +204,14 @@ public:
     value_constraint constraint;
     
     /*!
-        Defines how to treat this option when it comes to being mandatory or optional.
+        Defines how to treat this option when it comes to parsing.
     */
-    option_requirement requirement;
+    option_type type;
+    
+    /*!
+        User defined description that is displayed when printing the list of options.
+    */
+    std::string description;
 
 };
 

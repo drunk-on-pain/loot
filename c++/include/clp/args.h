@@ -67,7 +67,7 @@ enum class value_constraint
     Defines constants which describe how options are expected to appear on the command
     line.
 */
-enum class option_requirement
+enum class option_type
 {
     /*!
         The option must be present.
@@ -76,7 +76,12 @@ enum class option_requirement
     /*!
         The option may be present but does not have to be.
     */
-    optional_option
+    optional_option,
+    /*!
+        This is a special option. It is not checked for values and if found while parsing
+        the help is printed.
+    */
+    help_option
 };
 
 /*!

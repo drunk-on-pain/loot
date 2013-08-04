@@ -23,6 +23,8 @@
 
 #include <gtest/gtest.h>
 
+#include <ostream>
+#include <sstream>
 
 using namespace loot::clp;
 
@@ -31,7 +33,7 @@ TEST(ArgsTest, OneMandatoryArgNoValue)
 {
     option o("s", "long");
     o.constraint  = value_constraint::no_values;
-    o.requirement = option_requirement::mandatory_option;
+    o.type        = option_type::mandatory_option;
     
     char *argv[2] = {(char*)"ignored", (char*)"-s"};
     
@@ -48,7 +50,7 @@ TEST(ArgsTest, OneOptionalArgNoValue)
 {
     option o("s", "long");
     o.constraint  = value_constraint::no_values;
-    o.requirement = option_requirement::optional_option;
+    o.type        = option_type::optional_option;
 
     char *argv[2] = {(char*)"ignored", (char*)"--not-required"};
 
@@ -91,9 +93,10 @@ TEST(ArgsTest, ExactlyOneValue)
     parser p = { option(
             "s",
             "long",
-            option_requirement::mandatory_option,
+            option_type::mandatory_option,
             value_constraint::exact_num_values,
-            1) };
+            1,
+            "") };
     result r = p.parse(4, argv);
 
     EXPECT_EQ(r.good(), true);
@@ -113,9 +116,10 @@ TEST(ArgsTest, TwoValues)
     parser p = { option(
             "s",
             "long",
-            option_requirement::mandatory_option,
+            option_type::mandatory_option,
             value_constraint::exact_num_values,
-            2) };
+            2,
+            "") };
     result r = p.parse(5, argv);
 
     EXPECT_EQ(r.good(), true);
@@ -140,9 +144,10 @@ TEST(ArgsTest, UnlimitedValuesDelimitedByOption)
     parser p = { option(
             "s",
             "long",
-            option_requirement::mandatory_option,
+            option_type::mandatory_option,
             value_constraint::unlimited_num_values,
-            2) };
+            2,
+            "") };
     result r = p.parse(6, argv);
 
     EXPECT_EQ(r.good(), true);
@@ -167,9 +172,10 @@ TEST(ArgsTest, UnlimitedValuesDelimitedByEnd)
     parser p = { option(
             "s",
             "long",
-            option_requirement::mandatory_option,
+            option_type::mandatory_option,
             value_constraint::unlimited_num_values,
-            2) };
+            2,
+            "") };
     result r = p.parse(5, argv);
 
     EXPECT_EQ(r.good(), true);
@@ -191,9 +197,10 @@ TEST(ArgsTest, UnlimitedButno_values)
     parser p = { option(
             "s",
             "long",
-            option_requirement::mandatory_option,
+            option_type::mandatory_option,
             value_constraint::unlimited_num_values,
-            2) };
+            2,
+            "") };
     result r = p.parse(2, argv);
 
     EXPECT_EQ(r.good(), false);
@@ -212,14 +219,16 @@ TEST(ArgsTest, TwoOptionsOneUnlimitedErrorOneno_values)
     parser p = {
             option( "s",
                     "long",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::unlimited_num_values,
-                    2),
+                    2,
+                    ""),
             option( "n",
                     "no-values",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::no_values,
-                    0)};
+                    0,
+                    "")};
     result r = p.parse(3, argv);
 
     EXPECT_EQ(r.good(), false);
@@ -247,14 +256,16 @@ TEST(ArgsTest, ManyOptions)
     parser p = {
             option( "i",
                     "ip",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::exact_num_values,
-                    1),
+                    1,
+                    ""),
             option( "p",
                     "port",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::exact_num_values,
-                    1),
+                    1,
+                    ""),
             option("f", "files") };
     result r = p.parse(9, argv);
 
@@ -296,20 +307,23 @@ TEST(ArgsTest, ManyOptionsMixedRequirements)
     parser p = {
             option( "i",
                     "ip",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::exact_num_values,
-                    1),
+                    1,
+                    ""),
             option( "p",
                     "port",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::exact_num_values,
-                    1),
+                    1,
+                    ""),
             option("f", "files"),
             option( "u",
                     "userandpass",
-                    option_requirement::optional_option,
+                    option_type::optional_option,
                     value_constraint::exact_num_values,
-                    2)};
+                    2,
+                    "")};
     result r = p.parse(9, argv);
 
     EXPECT_EQ(r.good(), true);
@@ -331,20 +345,23 @@ TEST(ArgsTest, ManyOptionsMixedRequirementsError)
     parser p = {
             option( "i",
                     "ip",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::exact_num_values,
-                    1),
+                    1,
+                    ""),
             option( "p",
                     "port",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::exact_num_values,
-                    1),
+                    1,
+                    ""),
             option("f", "files"),
             option( "u",
                     "userandpass",
-                    option_requirement::optional_option,
+                    option_type::optional_option,
                     value_constraint::exact_num_values,
-                    2)};
+                    2,
+                    "")};
     result r = p.parse(4, argv);
 
     EXPECT_EQ(r.good(), false);
@@ -387,9 +404,10 @@ TEST(ArgsTest, ExactNumMoreValuesAvailable)
     parser p = {
             option( "s",
                     "long",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::exact_num_values,
-                    3) };
+                    3,
+                    "") };
     result r = p.parse(7, argv);
 
     EXPECT_EQ(r.good(), true);
@@ -417,9 +435,10 @@ TEST(ArgsTest, NoValueMoreValuesAvailable)
     parser p = {
             option( "s",
                     "long",
-                    option_requirement::mandatory_option,
+                    option_type::mandatory_option,
                     value_constraint::no_values,
-                    6) };
+                    6,
+                    "") };
     result r = p.parse(7, argv);
 
     EXPECT_EQ(r.good(), true);
@@ -444,9 +463,10 @@ TEST(ArgsTest, NoOptionName)
     parser p = {
             option( "",
                     "",
-                    option_requirement::optional_option,
+                    option_type::optional_option,
                     value_constraint::no_values,
-                    6) };
+                    6,
+                    "") };
     result r = p.parse(7, argv);
 
     EXPECT_EQ(r.good(), false);
@@ -455,3 +475,155 @@ TEST(ArgsTest, NoOptionName)
     error err = r.errors.at(0);
     EXPECT_EQ(err.reason, requirement_error::option_has_no_names_error);
 }
+
+TEST(ArgsTest, PrintArgsEmpty)
+{
+    parser p;
+    
+    std::stringbuf str;
+    std::ostream strm(&str);
+    
+    p.print_help(strm, false);
+    EXPECT_EQ(str.str(), "");
+    
+    strm.clear();
+    p.print_help(strm, true);
+    EXPECT_EQ(str.str(), "");
+}
+
+TEST(ArgsTest, PrintArgsOneOption)
+{
+    parser p = {
+            option( "i",
+                    "ip",
+                    option_type::mandatory_option,
+                    value_constraint::exact_num_values,
+                    1,
+                    "Ip address of host")
+                };
+    
+    std::stringbuf str;
+    std::ostream strm(&str);
+    
+    std::stringbuf comp;
+    std::ostream compstrm(&comp);
+    
+    compstrm << "Options" << std::endl
+         << "-i / --ip   Ip address of host"    << std::endl
+         << "            (1 value(s) expected)" << std::endl
+         << std::endl;
+    
+    
+    p.print_help(strm, true);
+    EXPECT_EQ(str.str(), comp.str());
+    
+
+    std::stringbuf str2;
+    std::ostream strm2(&str2);
+
+    std::stringbuf comp2;
+    std::ostream compstrm2(&comp2);
+    
+    compstrm2 << "Options" << std::endl
+         << "-i / --ip   Ip address of host"    << std::endl
+         << "            (1 value(s) expected)" << std::endl;
+    p.print_help(strm2, false);
+    EXPECT_EQ(str2.str(), comp2.str());
+}
+
+TEST(ArgsTest, PrintArgsMix)
+{
+    parser p = {
+            option( "i",
+                    "ip",
+                    option_type::mandatory_option,
+                    value_constraint::exact_num_values,
+                    1,
+                    "Fisch"),
+            option( "p",
+                    "port",
+                    option_type::mandatory_option,
+                    value_constraint::exact_num_values,
+                    1,
+                    "Misch"),
+            option("f", "files"),
+            option( "u",
+                    "userandpass",
+                    option_type::optional_option,
+                    value_constraint::exact_num_values,
+                    2,
+                    "Tisch"),
+            option( "r",
+                    "",
+                    option_type::optional_option,
+                    value_constraint::no_values,
+                    2,
+                    "Random option"),
+            option( "",
+                    "empty",
+                    option_type::optional_option,
+                    value_constraint::no_values,
+                    2,
+                    ""),
+            option( "",
+                    "ldesc",
+                    option_type::optional_option,
+                    value_constraint::up_to_num_values,
+                    5,
+                    "Long description, no short value")};
+    
+    std::stringbuf str;
+    std::ostream strm(&str);
+    
+    std::stringbuf comp;
+    std::ostream compstrm(&comp);
+    
+    compstrm << "Options" << std::endl
+         << "--empty              (no value expected)"              << std::endl
+         << std::endl
+         << "-f / --files         (unlimited number of values)"     << std::endl
+         << std::endl
+         << "-i / --ip            Fisch"                            << std::endl
+         << "                     (1 value(s) expected)"            << std::endl
+         << std::endl
+         << "--ldesc              Long description, no short value" << std::endl
+         << "                     (between 1 and 5 values)"         << std::endl
+         << std::endl
+         << "-p / --port          Misch"                            << std::endl
+         << "                     (1 value(s) expected)"            << std::endl
+         << std::endl
+         << "-r                   Random option"                    << std::endl
+         << "                     (no value expected)"              << std::endl
+         << std::endl
+         << "-u / --userandpass   Tisch"                            << std::endl
+         << "                     (2 value(s) expected)"            << std::endl
+         << std::endl;
+    
+    p.print_help(strm, true);
+    EXPECT_EQ(str.str(), comp.str());
+    
+    
+    std::stringbuf str2;
+    std::ostream strm2(&str2);
+    
+    std::stringbuf comp2;
+    std::ostream compstrm2(&comp2);
+    
+    compstrm2 << "Options" << std::endl
+         << "--empty              (no value expected)"              << std::endl
+         << "-f / --files         (unlimited number of values)"     << std::endl
+         << "-i / --ip            Fisch"                            << std::endl
+         << "                     (1 value(s) expected)"            << std::endl
+         << "--ldesc              Long description, no short value" << std::endl
+         << "                     (between 1 and 5 values)"         << std::endl
+         << "-p / --port          Misch"                            << std::endl
+         << "                     (1 value(s) expected)"            << std::endl
+         << "-r                   Random option"                    << std::endl
+         << "                     (no value expected)"              << std::endl
+         << "-u / --userandpass   Tisch"                            << std::endl
+         << "                     (2 value(s) expected)"            << std::endl;
+    
+    p.print_help(strm2, false);
+    EXPECT_EQ(str2.str(), comp2.str());
+}
+

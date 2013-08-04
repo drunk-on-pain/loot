@@ -37,9 +37,10 @@ option::option()
     : option(
             "",
             "",
-            option_requirement::optional_option,
+            option_type::optional_option,
             value_constraint::unlimited_num_values,
-            0)
+            0,
+            "")
 {
 }
 
@@ -47,24 +48,27 @@ option::option(const std::string& short_name, const std::string& long_name)
     : option(
             short_name,
             long_name,
-            option_requirement::optional_option,
+            option_type::optional_option,
             value_constraint::unlimited_num_values,
-            0)
+            0,
+            "")
 {
 }
 
 option::option(
         const std::string& short_name,
         const std::string& long_name,
-        option_requirement requirement,
+        option_type        type,
         value_constraint   constraint,
-        unsigned int       num_expected_values)
+        unsigned int       num_expected_values,
+        const std::string& description)
 {
     this->short_name          = short_name;
     this->long_name           = long_name;
-    this->requirement         = requirement;
+    this->type                = type;
     this->constraint          = constraint;
     this->num_expected_values = num_expected_values;
+    this->description         = description;
 }
 
 option::option(const option& other)
@@ -82,9 +86,10 @@ option::operator=(const option& other)
 {
     short_name          = other.short_name;
     long_name           = other.long_name;
-    requirement         = other.requirement;
+    type                = other.type;
     constraint          = other.constraint;
     num_expected_values = other.num_expected_values;
+    description         = other.description;
     return *this;
 }
 
@@ -93,9 +98,10 @@ option::operator=(option&& temp)
 {
     short_name          = std::move(temp.short_name);
     long_name           = std::move(temp.long_name);
-    requirement         = temp.requirement;
+    type                = temp.type;
     constraint          = temp.constraint;
     num_expected_values = temp.num_expected_values;
+    description         = std::move(temp.description);
     return *this;
 }
 
@@ -114,7 +120,7 @@ option::operator<(const option& other) const
 bool
 option::is_name_known(const std::string& name) const
 {
-    return (short_name == name || long_name == name);
+    return name.empty() ? false : (short_name == name || long_name == name);
 }
 
 } // namespace clp

@@ -36,6 +36,7 @@
 #include <map>
 #include <vector>
 #include <utility>
+#include <ostream>
 #include <initializer_list>
 
 namespace loot {
@@ -132,6 +133,19 @@ public:
         Returns `true` if the option was found or `false` otherwise.
     */
     bool has_option(const std::string& name) const;
+    
+    /*!
+        Print an abstract of the options added to the parser. This method is automatically
+        invoked if an option with type `option_type::help_option` is detected.
+        
+        @param[in] out
+        Output stream to write the help to.
+     
+        @param[in] newline
+        Set to `true` to add a new line after each option creating more space between 
+        them. Set to `false` to create a more condensed output.
+    */
+    void print_help(std::ostream& out, bool newline) const;
 
 private:
     /*!
