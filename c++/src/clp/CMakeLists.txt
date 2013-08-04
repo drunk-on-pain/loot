@@ -30,7 +30,12 @@
 set(CLP_SOURCES error.cpp 
 				option.cpp
 				parser.cpp
-				result.cpp)
+				result.cpp
+				../../include/clp/args.h
+				../../include/clp/error.h
+				../../include/clp/option.h
+				../../include/clp/parser.h
+				../../include/clp/result.h)
 include_directories("../../include")
 
 add_library(loot-clp SHARED ${CLP_SOURCES})
