@@ -61,8 +61,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/clp")
 
-if (${GTEST_FOUND})
+message(STATUS ${CMAKE_GENERATOR})
+
+if (${GTEST_FOUND} AND NOT CMAKE_GENERATOR STREQUAL Xcode)
     message(STATUS "GTest found: Create test suite")
     
     add_subdirectory("${CMAKE_SOURCE_DIR}/test/clp")
-endif (${GTEST_FOUND})
+endif (${GTEST_FOUND} AND NOT CMAKE_GENERATOR STREQUAL Xcode)
