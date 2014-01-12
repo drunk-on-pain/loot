@@ -8,3 +8,5 @@
 c++/lib
 c++/bin
 c++/build
+
+c++/include/config.h
