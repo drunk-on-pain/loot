@@ -47,7 +47,7 @@
 #cmakedefine HAS_CXX11_INITIALIZER_LISTS
 #cmakedefine MSVC_COMPILER
 
-#ifdef LOOT_LIB_EXPORTS && MSVC_COMPILER
+#if defined(LOOT_LIB_EXPORTS) && defined(MSVC_COMPILER)
     #define LOOT_LIB_EXPORT __declspec(dllexport)
 #else
     #define LOOT_LIB_EXPORT 

@@ -1,4 +1,5 @@
 class deleg_constructor {
+public:
 	int _dummy;
     
 	deleg_constructor(int dummy)
@@ -12,6 +13,6 @@ class deleg_constructor {
 
 int main()
 {
-    deleg_constructor();
+    deleg_constructor dc;
 	return 0;
 }

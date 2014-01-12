@@ -30,9 +30,9 @@
 set(CLP_TEST_SOURCES main.cpp 
 					 test.cpp)
 # Workaround for OS X Mavericks (and maybe earlier)
-if (${CMAKE_COMPILER_IS_GNUCXX} AND ${APPLE})
+if (${APPLE})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${GTEST_INCLUDE_DIRS}")
-endif (${CMAKE_COMPILER_IS_GNUCXX} AND ${APPLE})
+endif (${APPLE})
 
 include_directories("../../include" ${GTEST_INCLUDE_DIRS})
 
