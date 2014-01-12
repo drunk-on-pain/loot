@@ -44,6 +44,10 @@ foreach (flag ${CXX11_FEATURE_LIST})
     set(${flag} 1)
 endforeach (flag ${CXX11_FEATURE_LIST})
 
+if (${MSVC})
+    set(MSVC_COMPILER 1)
+endif (${MSVC})
+
 configure_file(${CMAKE_HOME_DIRECTORY}/config.h.in ${CMAKE_HOME_DIRECTORY}/include/config.h)
 
 message(STATUS ${CMAKE_CXX_FLAGS})
@@ -65,6 +69,7 @@ message(STATUS ${CMAKE_GENERATOR})
 
 if (${GTEST_FOUND})
     message(STATUS "GTest found: Create test suite")
+    message(STATUS ${GTEST_INCLUDE_DIRS})
     
     add_subdirectory("${CMAKE_SOURCE_DIR}/test/clp")
 endif (${GTEST_FOUND})

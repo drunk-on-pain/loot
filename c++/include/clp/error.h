@@ -30,6 +30,7 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include "../config.h"
 #include "args.h"
 #include "option.h"
 
@@ -42,7 +43,7 @@ namespace clp {
     created by `loot::clp::result` containing a copy of the `loot::clp::option` that
     failed and an associated error reason.
 */
-class error
+class LOOT_LIB_EXPORT error
 {
 public:
     /*!

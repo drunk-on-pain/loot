@@ -41,7 +41,11 @@ namespace clp {
     Defines constants which describe how many values are to be expected for one 
     `loot::clp::option`.
 */
+#ifdef HAS_CXX11_ENUM_CLASS
 enum class value_constraint
+#else
+enum value_constraint
+#endif
 {
     /*!
         The number of values provided must match exactly the number expected.
@@ -67,7 +71,11 @@ enum class value_constraint
     Defines constants which describe how options are expected to appear on the command
     line.
 */
+#ifdef HAS_CXX11_ENUM_CLASS
 enum class option_type
+#else
+enum option_type
+#endif
 {
     /*!
         The option must be present.
@@ -87,7 +95,11 @@ enum class option_type
 /*!
     Defines constants which describe the reason why an option failed the validation test.
 */
+#ifdef HAS_CXX11_ENUM_CLASS
 enum class requirement_error
+#else
+enum requirement_error
+#endif
 {
     /*!
         Can be used as a default value indicating an uninitialized state.
@@ -111,6 +123,15 @@ enum class requirement_error
     invalid_value_constraint_error
 };
 
+#ifdef HAS_CXX11_ENUM_CLASS
+	#define value_constraint_e  value_constraint::
+	#define option_type_e       option_type::
+	#define requirement_error_e requirement_error::
+#else
+	#define value_constraint_e 
+	#define option_type_e 
+	#define requirement_error_e 
+#endif
 
 } // namespace clp
 } // namespace loot

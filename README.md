@@ -29,5 +29,11 @@ associated values are available for use.
 Compiling the test suite on XCode does not work. See [this StackOverflow question][xctst]
 for an explanation. Compiling on the command line on OS X works without problems.
 
+Compiling with Visual Studio throws this error:
+
+    gtest.lib(gtest-all.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in main.obj
+
+This happens if CMake links the release version of `gtest` to the debug version of `loot`. Check your project file and link to the debug version of `gtest` to fix that.
+
 [xctst]: http://stackoverflow.com/questions/11697657/xcode-4-3-is-not-finding-header-files-in-usr-include?rq=1
 [clpusage]: https://github.com/drunk-on-pain/loot/wiki/Command-Line-Parser

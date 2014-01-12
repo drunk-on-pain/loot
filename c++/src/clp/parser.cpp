@@ -28,6 +28,7 @@
 */
 
 #include <clp/parser.h>
+#include <algorithm>
 
 namespace loot {
 namespace clp {
@@ -36,6 +37,7 @@ parser::parser()
 {
 }
 
+#ifdef HAS_CXX11_INITIALIZER_LISTS
 parser::parser(std::initializer_list<option> args)
 {
     auto iter = std::begin(args);
@@ -44,6 +46,7 @@ parser::parser(std::initializer_list<option> args)
         iter++;
     }
 }
+#endif
 
 bool
 parser::add_option(const option& opt)
@@ -88,10 +91,10 @@ parser::parse(int argc, char* argv[])
     opt_map::const_iterator iter = std::begin(options);
     while (iter != std::end(options)) {
         option_type req = iter->first.type;
-        if (option_type::mandatory_option == req && !iter->second.second) {
+        if (option_type_e mandatory_option == req && !iter->second.second) {
             r.errors.push_back(error(
                     iter->first,
-                    requirement_error::option_not_found_error));
+                    requirement_error_e option_not_found_error));
         }
         iter++;
     }
@@ -109,7 +112,7 @@ parser::evaluate_values(int argc, char* argv[])
         if (iter->first.short_name.empty() && iter->first.long_name.empty()) {
             result.errors.push_back(error(
                     iter->first,
-                    requirement_error::option_has_no_names_error));
+                    requirement_error_e option_has_no_names_error));
         }
 
         // Skip the application name => c = 1
@@ -129,39 +132,39 @@ parser::evaluate_values(int argc, char* argv[])
             // ...sure we know that option!
             iter->second.second = true;
 
-            if (value_constraint::no_values == iter->first.constraint) {
+            if (value_constraint_e no_values == iter->first.constraint) {
                 break; // No need to continue; finding the option is enough.
             }
 
             // Read all values according to the configuration. Unlimited is the amount
             // of args on the command line minus the position of the current option.
-            int count = value_constraint::unlimited_num_values == iter->first.constraint
+            int count = value_constraint_e unlimited_num_values == iter->first.constraint
                     ? argc - c - 1
                     : iter->first.num_expected_values;
             unsigned int values_read = read(c, count, argv, iter->second.first);
 
             switch (iter->first.constraint) {
-                case value_constraint::exact_num_values:
+                case value_constraint_e exact_num_values:
                     if (values_read != iter->first.num_expected_values) {
                         result.errors.push_back(error(
                         		iter->first,
-                                requirement_error::not_enough_values_error));
+                                requirement_error_e not_enough_values_error));
                     }
                     break;
 
-                case value_constraint::up_to_num_values:
-                case value_constraint::unlimited_num_values:
+                case value_constraint_e up_to_num_values:
+                case value_constraint_e unlimited_num_values:
                     if (0 == values_read) {
                         result.errors.push_back(error(
                         		iter->first,
-                                requirement_error::not_enough_values_error));
+                                requirement_error_e not_enough_values_error));
                     }
                     break;
 
                 default:
                     result.errors.push_back(error(
                     		iter->first,
-                            requirement_error::invalid_value_constraint_error));
+                            requirement_error_e invalid_value_constraint_error));
                     break;
             }
 
@@ -303,19 +306,19 @@ parser::print_help(std::ostream& out, bool newline) const
         }
         
         switch (item.first.constraint) {
-            case value_constraint::exact_num_values:
+            case value_constraint_e exact_num_values:
                 out << "(" << item.first.num_expected_values << " value(s) expected)";
                 break;
                 
-            case value_constraint::up_to_num_values:
+            case value_constraint_e up_to_num_values:
                 out << "(between 1 and " << item.first.num_expected_values << " values)";
                 break;
 
-            case value_constraint::unlimited_num_values:
+            case value_constraint_e unlimited_num_values:
                 out << "(unlimited number of values)";
                 break;
                 
-            case value_constraint::no_values:
+            case value_constraint_e no_values:
                 out << "(no value expected)";
                 break;
         }

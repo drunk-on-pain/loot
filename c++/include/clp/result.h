@@ -30,6 +30,7 @@
 #ifndef RESULT_H
 #define RESULT_H
 
+#include "../config.h"
 #include "error.h"
 
 #include <vector>
@@ -45,7 +46,7 @@ namespace clp {
     client code can easily figure out which option(s) caused the error and provide quality
     messages to users.
 */
-class result
+class LOOT_LIB_EXPORT result
 {
 public:
     /*!

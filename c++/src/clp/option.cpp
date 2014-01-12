@@ -33,27 +33,26 @@
 namespace loot {
 namespace clp {
 
+// The only exception to the require-delegating_constructors rule. The default 
+// constructor is too important to be left out
 option::option()
-    : option(
-            "",
-            "",
-            option_type::optional_option,
-            value_constraint::unlimited_num_values,
-            0,
-            "")
 {
+    this->type                = option_type_e optional_option;
+    this->constraint          = value_constraint_e unlimited_num_values;
+    this->num_expected_values = 0;
 }
 
+#ifdef HAS_CXX11_DELEG_CONSTRUCTOR
 option::option(const std::string& short_name, const std::string& long_name)
-    : option(
+	: option(
             short_name,
             long_name,
             option_type::optional_option,
             value_constraint::unlimited_num_values,
             0,
             "")
-{
-}
+{}
+#endif 
 
 option::option(
         const std::string& short_name,

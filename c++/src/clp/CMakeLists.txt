@@ -37,7 +37,13 @@ set(CLP_SOURCES error.cpp
 				../../include/clp/parser.h
 				../../include/clp/result.h)
 include_directories("../../include")
+add_definitions(-DLOOT_LIB_EXPORTS)
 
 add_library(loot-clp SHARED ${CLP_SOURCES})
 
-target_link_libraries(loot-clp c++)
+set(LIBS "")
+if (${CMAKE_COMPILER_IS_GNUCXX})
+	set(LIBS ${LIBS} c++)
+endif (${CMAKE_COMPILER_IS_GNUCXX})
+
+target_link_libraries(loot-clp ${LIBS})

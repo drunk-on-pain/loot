@@ -30,6 +30,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include "../config.h"
 #include "option.h"
 #include "result.h"
 
@@ -47,7 +48,7 @@ namespace clp {
     Performs the task of parsing the command line while looking for any of the options
     specified.
 */
-class parser
+class LOOT_LIB_EXPORT parser
 {
     typedef std::map<option, std::pair<std::vector<std::string>, bool>> opt_map;
 public:
@@ -58,11 +59,14 @@ public:
 
     /*!
         Creates a new `loot::clp::parser` with a list of `loot::clp::option` instances.
+        Only available if the compiler support initializer_list syntax.
 
         @param[in] args
         List of options creates by the bracket initializer (`{}`).
      */
+    #ifdef HAS_CXX11_INITIALIZER_LISTS
     parser(std::initializer_list<option> args);
+    #endif
 
     /*!
         Add an `loot::clp::option` for validation and, in case values are expected, to have

@@ -30,6 +30,7 @@
 #ifndef OPTION_H
 #define OPTION_H
 
+#include "../config.h"
 #include "args.h"
 
 #include <string>
@@ -47,7 +48,7 @@ namespace clp {
     values is very flexible, from an exact number of values to an unlimited number of 
     values to "up-to but no exact match necessary".
 */
-class option
+class LOOT_LIB_EXPORT option
 {
 public:
     /*!
@@ -68,6 +69,8 @@ public:
 
         - Unlimited number of values expected
         - Option is not mandatory
+
+        This method is only available if the comiler supports delegating constructors.
         
         @param[in] short_name
         Short name for this option.
@@ -75,8 +78,10 @@ public:
         @param[in] long_name
         Long name for this option.
     */
+    #ifdef HAS_CXX11_DELEG_CONSTRUCTOR
     option(const std::string& short_name, const std::string& long_name);
-    
+    #endif
+
     /*!
         Create a new option by specifying all available values.
         
