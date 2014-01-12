@@ -63,8 +63,8 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/src/clp")
 
 message(STATUS ${CMAKE_GENERATOR})
 
-if (${GTEST_FOUND} AND NOT CMAKE_GENERATOR STREQUAL Xcode)
+if (${GTEST_FOUND})
     message(STATUS "GTest found: Create test suite")
     
     add_subdirectory("${CMAKE_SOURCE_DIR}/test/clp")
-endif (${GTEST_FOUND} AND NOT CMAKE_GENERATOR STREQUAL Xcode)
+endif (${GTEST_FOUND})
