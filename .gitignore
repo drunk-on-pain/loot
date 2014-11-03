@@ -2,11 +2,14 @@
 .DS_Store
 
 *.o
-
+*.obj
 *.dylib
+*.lib
 
 c++/lib
 c++/bin
 c++/build
 
 c++/include/config.h
+
+build
