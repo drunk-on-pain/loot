@@ -55,7 +55,7 @@ public:
     /*!
         Creates an new `loot::clp::parser` with no associated `loot::clp::option` instances.
     */
-    parser();
+    parser() = default;
 
     /*!
         Creates a new `loot::clp::parser` with a list of `loot::clp::option` instances.
@@ -220,6 +220,8 @@ private:
         Returns a list of errors that came up while reading and evaluating values.
     */
     result evaluate_values(int argc, char *argv[]);
+    
+    bool is_opt_known(const std::string& short_name, const std::string& long_name) const;
 
     opt_map options;
 

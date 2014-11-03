@@ -28,36 +28,25 @@
 */
 
 #include <clp/parser.h>
+#include <algorithm/algorithm.h>
 #include <algorithm>
 
-namespace loot {
-namespace clp {
-
-parser::parser()
-{
-}
+using namespace loot::clp;
 
 #ifdef HAS_CXX11_INITIALIZER_LISTS
 parser::parser(std::initializer_list<option> args)
 {
-    auto iter = std::begin(args);
-    while (iter != std::end(args)) {
-        add_option(*iter);
-        iter++;
-    }
+    loot::algorithm::for_each(args, [this](const option& opt) {
+        add_option(opt);
+    });
 }
 #endif
 
 bool
 parser::add_option(const option& opt)
 {
-    auto iter = std::begin(options);
-    while (iter != std::end(options)) {
-        if (iter->first.is_name_known(opt.short_name)
-              || iter->first.is_name_known(opt.long_name)) {
-            return false;
-        }
-        ++iter;
+    if (is_opt_known(opt.short_name, opt.long_name)) {
+        return false;
     }
 
     options[opt] = std::make_pair(std::vector<std::string>(), false);
@@ -67,13 +56,8 @@ parser::add_option(const option& opt)
 bool
 parser::add_option(option&& temp)
 {
-    auto iter = std::begin(options);
-    while (iter != std::end(options)) {
-        if (iter->first.is_name_known(temp.short_name)
-              || iter->first.is_name_known(temp.long_name)) {
-            return false;
-        }
-        ++iter;
+    if (is_opt_known(temp.short_name, temp.long_name)) {
+        return false;
     }
 
     options[std::move(temp)] = std::make_pair(std::vector<std::string>(), false);
@@ -88,16 +72,12 @@ parser::parse(int argc, char* argv[])
     // check the option requirement.
     result r = evaluate_values(argc, argv);
 
-    opt_map::const_iterator iter = std::begin(options);
-    while (iter != std::end(options)) {
-        option_type req = iter->first.type;
-        if (option_type_e mandatory_option == req && !iter->second.second) {
-            r.errors.push_back(error(
-                    iter->first,
-                    requirement_error_e option_not_found_error));
+    loot::algorithm::for_each(options, [&r](const opt_map::value_type& value) {
+        if (option_type_e mandatory_option == value.first.type && !value.second.second) {
+            r.errors.push_back(error(value.first,
+                                     requirement_error_e option_not_found_error));
         }
-        iter++;
-    }
+    });
 
     return r;
 }
@@ -237,10 +217,7 @@ parser::has_option(const std::string& name) const
 parser::opt_map::const_iterator
 parser::find_option(const std::string& name) const
 {
-    return std::find_if(
-            std::begin(options),
-            std::end(options),
-            [&name](const opt_map::value_type& item) -> bool {
+    return loot::algorithm::find_if(options, [&name](const opt_map::value_type& item) {
         return item.first.is_name_known(name) && item.second.second;
     });
 }
@@ -252,10 +229,7 @@ parser::print_help(std::ostream& out, bool newline) const
     // option so we can calculate the required whitespace. The second loop then prints
     // the options.
     int max = 0;
-    std::for_each(
-            std::begin(options),
-            std::end(options),
-            [&max](const opt_map::value_type& item) {
+    loot::algorithm::for_each(options, [&max](const opt_map::value_type& item) {
         int optlen = item.first.short_name.length() + item.first.long_name.length();
         max = optlen > max ? optlen : max;
     });
@@ -264,10 +238,8 @@ parser::print_help(std::ostream& out, bool newline) const
         out << "Options" << std::endl;
     }
     
-    std::for_each(
-            std::begin(options),
-            std::end(options),
-            [max, &out, newline](const opt_map::value_type& item) {
+    loot::algorithm::for_each(options, 
+                              [max, &out, newline](const opt_map::value_type& item) {
         int posfix = 0;
         if (!item.first.short_name.empty()) {
             out << "-" << item.first.short_name;
@@ -330,5 +302,14 @@ parser::print_help(std::ostream& out, bool newline) const
     });
 }
 
-} // namespace clp
-} // namespace loot
+bool 
+parser::is_opt_known(const std::string& short_name, const std::string& long_name) const
+{
+    auto iter = loot::algorithm::find_if(options, 
+            [short_name, long_name](const opt_map::value_type& value) 
+        {
+            return value.first.is_name_known(short_name)
+                    || value.first.is_name_known(long_name);
+        });
+    return (iter != std::end(options));
+}
